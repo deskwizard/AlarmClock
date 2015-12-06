@@ -192,22 +192,30 @@ void radioSeek(bool direction) {
 }
 
 void setAudioOut(uint8_t audio_out) {
-  // change to switch case
-  if (audio_out == BEEP) { // Y0
-    setGPIO(0, LOW);
-    setGPIO(1, LOW);
+  // change to switch case?
+  if (audio_out == DISABLED) {
+    // Disable amplifier & 4051
+    setGPIO(AUDIO_EN, LOW);
   }
-  if (audio_out == FM) {  // Y1
-    setGPIO(0, HIGH);
-    setGPIO(1, LOW);
-  }
-  if (audio_out == MP3) { // Y2
-    setGPIO(0, LOW);
-    setGPIO(1, HIGH);
-  }
-  if (audio_out == BT) {  // Y3
-    setGPIO(0, HIGH);
-    setGPIO(1, HIGH);
+  else {
+    // Enable amplifier & 4051
+    setGPIO(AUDIO_EN, HIGH);
+    if (audio_out == BEEP) { // Y0
+      setGPIO(S1_4051, LOW);
+      setGPIO(S2_4051, LOW);
+    }
+    if (audio_out == FM) {  // Y1
+      setGPIO(S1_4051, HIGH);
+      setGPIO(S2_4051, LOW);
+    }
+    if (audio_out == MP3) { // Y2
+      setGPIO(S1_4051, LOW);
+      setGPIO(S2_4051, HIGH);
+    }
+    if (audio_out == BT) {  // Y3
+      setGPIO(S1_4051, HIGH);
+      setGPIO(S2_4051, HIGH);
+    }
   }
 }
 

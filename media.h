@@ -8,11 +8,15 @@
 #define ON 1
 #define OFF 0
 
+// GPIOs (Temporary!)
 #define MP3_POWER 10 //  on GPIO[10] (MCP23017 PORTA Bit 7, See GPIO.h)
 #define MP3_VOLU 9
 #define MP3_VOLD 8
 #define MP3_NEXT 7
 #define MP3_PREV 6
+#define S1_4051 0
+#define S2_4051 1
+#define AUDIO_EN 3
 
 #define FMFREQ_LADDR 42
 #define FMFREQ_HADDR 43
