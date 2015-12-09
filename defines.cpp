@@ -188,9 +188,9 @@ void playMelody() {
 
   // Need its own millis because its time sensitive
   uint32_t currentMillis = millis();
-  if (currentMillis - prevMelodyMillis > 170) {
+  if (currentMillis - prevMelodyMillis > 40) {
     prevMelodyMillis = currentMillis;
-    tone(SPK_OUT, (2 * current_tone), 160);
+    tone(SPK_OUT, (2 * current_tone), 40);
     current_tone = current_tone + 12;
     if (current_tone > 236) {
       current_tone = 112;

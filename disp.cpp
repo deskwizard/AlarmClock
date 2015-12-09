@@ -14,7 +14,7 @@ uint32_t previousFlashMillis = 0;
 
 void displayStart() {
   // 7 segment display initialization
-  disp.setScanLimit(0, 8);  // Limit scanning to 8 digits, less on time on per digit, dimmer
+  disp.setScanLimit(0, 4);  // Limit scanning to 4 digits
   disp.setIntensity(0, 0);  // Set the brightness minimum value on start
   disp.clearDisplay(0);     // Clear the display
   disp.shutdown(0, false);  // Wake up MAX7221 (get out of power saving mode)
@@ -27,7 +27,7 @@ void displayAutoBrightness() {
     sensorCount++;
 
     if (sensorCount == 100) {
-      displayBrightness((sensorValue / 100) >> 5); // (0 - 32)
+      displayBrightness((sensorValue / 100) >> 6); // (0 - 15)
       sensorCount = 0;
       sensorValue = 0;
     }
@@ -35,13 +35,7 @@ void displayAutoBrightness() {
 }
 
 void displayBrightness(uint8_t _value) {
-  if (_value >= 16) {
-    disp.setScanLimit(0, 4);  // Limit scanning to 4 digits
-    _value = _value - 16;
-  }
-  else {
-    disp.setScanLimit(0, 8);  // Limit scanning to 8 digits, less on time on per digit, dimmer
-  }
+
 #ifdef _CDS_DEBUG
   Serial.print(F("_value :   "));
   Serial.println(_value);
