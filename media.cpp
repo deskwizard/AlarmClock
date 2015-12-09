@@ -83,11 +83,13 @@ void mp3Power() {
   if (stateMP3 == 1) {
     // turn off
     setGPIO(MP3_POWER, LOW);
+    setAudioOut(DISABLED);
     stateMP3 = 0;
   }
   else {
     // turn on
     setGPIO(MP3_POWER, HIGH);
+    setAudioOut(MP3);
     stateMP3 = 1;
     if (Run_Mode != RM_ALARM_TRIG) {
       displayMode(MP3);
@@ -153,12 +155,13 @@ void radioPower() {
     stateFM = ON;
     radio.init();
     radio.setBand(RADIO_BAND_FM);
-    radio.setMono(true);
+    radio.setBassBoost(true);
     setAudioOut(FM);
     radio.setMute(false);
     savedFreq = eepromRead16(FMFREQ_LADDR, FMFREQ_HADDR);
     radio.setFrequency(savedFreq);
     radio.setVolume(15); // TEMPORARY (0-15)
+    setAudioOut(FM);
 #ifdef _RADIO_DEBUG
     radioDebug();
 #endif
@@ -172,6 +175,7 @@ void radioPower() {
     savedFreq = radio.getFrequency(); // Save currently tuned frequency
     eepromUpdate16(FMFREQ_LADDR, FMFREQ_HADDR, savedFreq);
     radio.term(); // Turn off RDA
+    setAudioOut(DISABLED);
     stateFM = OFF;
   }
 

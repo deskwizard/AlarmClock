@@ -1,0 +1,18 @@
+purple - blue
+green - yellow
+brown - orange
+white to light orange near trimpot
+
+	DS		Board
+
+	R18		* R8
+	R19		* R9 (Assumed designator, near C3 SS)
+	C22		* C7
+	C24		C5? (|_ to amp pin 2)
+	C25		C6 (shared)
+
+	C1		C3
+	C6		C2
+	C4		C6 (shared)
+
+

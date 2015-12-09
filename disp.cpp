@@ -231,7 +231,12 @@ void displayUpdate() {
   disp.setDigit(0, 1, hours_d2, dot_state[1]);
   disp.setDigit(0, 2, minutes_d1, dot_state[2]);
   disp.setDigit(0, 3, minutes_d2, dot_state[3]);
-  disp_update_delay = 1000;
+  if (Run_Mode == RM_TIME_SET || Run_Mode == RM_ALARM_SET) {
+    disp_update_delay = 0;
+  }
+  else {
+    disp_update_delay = 1000;
+  }
 }
 
 
