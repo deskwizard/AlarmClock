@@ -94,18 +94,18 @@ void mediaPower() {
 
 void setVolume(bool _direction) {
 
-    if (_direction) { // volume up
-      volume = volume + 4;
-      if (volume > 124) {
-        volume = 124;
-      }
+  if (_direction) { // volume up
+    volume = volume + 4;
+    if (volume > 124) {
+      volume = 124;
     }
-    else { // volume down
-      volume = volume - 4;
-      if (volume > 127) {
-        volume = 0;
-      }
+  }
+  else { // volume down
+    volume = volume - 4;
+    if (volume > 127) {
+      volume = 0;
     }
+  }
 
   Wire.beginTransmission(0x50); // transmit to address 0x50
   Wire.write(0xF9);            // Pot0
