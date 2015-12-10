@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include <EEPROM.h>
-#include "media.h"
 #include "defines.h"
+#include "media.h"
 #include "disp.h"
+#include "timed.h"
 #include <RDA5807M.h>
 
 RDA5807M radio;
@@ -15,29 +16,27 @@ uint8_t volume = EEPROM.read(VOLUME_ADDR);
 
 void mediaChange() {
 
-  if ((stateFM + stateMP3 + stateBT) > 0) { // if something is on
-    if (stateFM == 1) {
+  if (Media_Mode != DISABLED) { // if something is on
+    if (Media_Mode == FM) {
       // turn off radio
       radioPower();
       // turn on mp3 module
       mp3Power();
       lastMedia = MP3;
     }
-    else if (stateMP3 == 1) {
+    else if (Media_Mode == MP3) {
       // turn off mp3 module
       mp3Power();
       // turn on BT (temporary for debug)
       Serial.println(F("Turn on BT"));
-      stateBT = 1;
       displayMode(BT);
       Media_Mode = BT;
       // lastMedia = BT; // Still not sure about BT
     }
-    else if (stateBT == 1) {
+    else if (Media_Mode == BT) {
       // turn off BT (temporary for debug)
       Serial.println(F("Turn off BT"));
       Media_Mode = DISABLED; // debug while no bt
-      stateBT = 0;
       // turn on radio
       radioPower();
       lastMedia = FM;
@@ -55,9 +54,8 @@ void mediaChange() {
 
 void mediaPower() {
 
-  if ((stateFM + stateMP3 + stateBT) == DISABLED) { // if everything is off
+  if (Media_Mode == DISABLED) { // if everything is off
     // use lastMedia to start the last used media source (not sure what to do with BT...)
-
     if (lastMedia == FM) {
       // turn on radio
       radioPower();
@@ -66,18 +64,17 @@ void mediaPower() {
       // turn on MP3 module
       mp3Power();
     }
-
   }
   else { // something is on
-    if (stateFM == ENABLED) {
+    if (Media_Mode = FM) {
       // turn off radio
       radioPower();
     }
-    else if (stateMP3 == ENABLED) {
+    else if (Media_Mode = MP3) {
       // turn off mp3 module
       mp3Power();
     }
-    else if (stateBT == ENABLED) {
+    else if (Media_Mode = BT) {
       // turn off BT
       Serial.println(F("power - Turn off BT"));
       Media_Mode = DISABLED;
@@ -121,19 +118,17 @@ void setVolume(bool _direction) {
 }
 
 void mp3Power() {
-  if (stateMP3 == 1) {
+  if (Media_Mode == MP3) {
     // turn off
     setGPIO(MP3_POWER, LOW);
     setAudioOut(DISABLED);
     Media_Mode = DISABLED;
-    stateMP3 = DISABLED;
   }
   else {
     // turn on
     setGPIO(MP3_POWER, HIGH);
     setAudioOut(MP3);
     Media_Mode = MP3;
-    stateMP3 = ENABLED;
     if (Run_Mode != RM_ALARM_TRIG) {
       displayMode(MP3);
     }
@@ -168,9 +163,16 @@ void mp3Rew(bool _start) {
 void radioPower() {
   // Powers up the radio if its powered down, power it down if its powered up
 
-  if (stateFM == OFF) {
+  if (Media_Mode == FM) {
+    Serial.println(radio.getFrequency());
+    savedFreq = radio.getFrequency(); // Save currently tuned frequency
+    eepromUpdate16(FMFREQ_LADDR, FMFREQ_HADDR, savedFreq);
+    radio.term(); // Turn off RDA
+    setAudioOut(DISABLED);
+    Media_Mode = DISABLED;
+  }
+  else {
     Media_Mode = FM;
-    stateFM = ON;
     radio.init();
     radio.setBand(RADIO_BAND_FM);
     radio.setBassBoost(true);
@@ -187,15 +189,6 @@ void radioPower() {
     if (Run_Mode != RM_ALARM_TRIG) {
       displayFrequency(radio.getFrequency());
     }
-  }
-  else {
-    Serial.println(radio.getFrequency());
-    savedFreq = radio.getFrequency(); // Save currently tuned frequency
-    eepromUpdate16(FMFREQ_LADDR, FMFREQ_HADDR, savedFreq);
-    radio.term(); // Turn off RDA
-    setAudioOut(DISABLED);
-    Media_Mode = DISABLED;
-    stateFM = OFF;
   }
 
 }

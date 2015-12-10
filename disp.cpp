@@ -1,6 +1,6 @@
-#include "disp.h"
 #include "defines.h"
-
+#include "disp.h"
+#include "timed.h"
 // LedControl Library for MAX7221 7 segment display handling
 #include "LedControl.h"
 LedControl disp = LedControl(11, 13, 12, 1); // DataIn (MOSI), CLK (SCK), LOAD (CS), Qty of MAX7221s

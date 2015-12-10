@@ -2,6 +2,7 @@
 #include "defines.h"
 #include "disp.h"
 #include "media.h"
+#include "timed.h"
 
 #include <EEPROM.h> // Temporary for saving alarm 
 #include <MCP23017.h>           // Include MCP23017 library
@@ -153,7 +154,7 @@ void expanderButtonReact() {
       }
 
 
-      if (stateFM) {  // If FM is active
+      if (Media_Mode == FM) {  // If FM is active
         if (is_new_of_type(button_read[1], MCP_CLICK)) {
           radioSeek(DOWN);
 #ifdef _SERIAL_DEBUG
@@ -169,7 +170,7 @@ void expanderButtonReact() {
 #endif
         }
       }
-      else if (stateMP3) { // If MP3 is active
+      else if (Media_Mode == MP3) { // If MP3 is active
 
         // ********* MP3 module Next/Prev/FF/Rew handling ************
         if (is_new_of_type(button_read[1], MCP_CLICK)) {

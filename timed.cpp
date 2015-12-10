@@ -2,6 +2,7 @@
 #include <Wire.h>       // I2C library
 #include <EEPROM.h>
 #include "defines.h"
+#include "timed.h"
 #include "disp.h"
 #include "buttons_react.h"
 #include "GPIO.h"

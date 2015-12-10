@@ -1,4 +1,5 @@
-#include "defines.h" // Defines and variables 
+#include "defines.h" // Defines
+#include "timed.h" // timed events/routines 
 #include "disp.h" // Display routines
 #include "buttons_react.h"
 
@@ -24,11 +25,6 @@ bool alarm_handled = 0;
 uint8_t alarm_mode = 1; // Default to beep
 bool alarm_enabled = 0;
 
-// Media state variables 
-bool stateFM = 0;
-bool stateMP3 = 0;
-bool stateBT = 0;
-
 // **** Start setup() ****
 void setup() {
   // Get Alarm value (read eeprom value until DS3231 gets here)
@@ -36,7 +32,6 @@ void setup() {
   alarm_time[MINUTE] = EEPROM.read(MINUTE);
 
 #ifdef _SERIAL_DEBUG
-  pinMode(DEBUG_LED, OUTPUT);
   debug_start();
 #endif
   TWBR = (F_CPU / 24992);
