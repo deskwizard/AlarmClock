@@ -309,7 +309,7 @@ void expanderButtonReact() {
 
       alarm_mode++;
       if (alarm_mode > MP3) {
-        alarm_mode = 0;
+        alarm_mode = 1;
       }
       displayMode(alarm_mode);
 #ifdef _SERIAL_DEBUG
