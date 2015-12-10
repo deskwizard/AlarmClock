@@ -107,6 +107,16 @@ void expanderButtonReact() {
       return;
     }
 
+    // Button 7 - Click - RM_TIME_DISP -> Alarm enable/Disable
+    if (is_new_of_type(button_read[7], MCP_CLICK) && Media_Mode == DISABLED) {
+
+      alarm_enabled = !alarm_enabled;
+      
+#ifdef _SERIAL_DEBUG
+      Serial.println(F("Alarm enabled: "));
+      Serial.println(alarm_enabled);
+#endif
+    }
 
     // ****** Media handling buttons ******
 
@@ -252,7 +262,7 @@ void expanderButtonReact() {
   if (Run_Mode == RM_TIME_SET || Run_Mode == RM_ALARM_SET) {
 
 
-    // Button 0 - Held Release - RM_TIME_SET -> Reset seconds, Save new time, Exit time set mode
+    // Button 0 - Long click - RM_TIME_SET -> Reset seconds, Save new time, Exit time set mode
     if (is_new_of_type(button_read[0], MCP_LONG_CLICK) && Run_Mode == RM_TIME_SET) {
       // Reset seconds
       time.Hour = temp_time[HOUR];
@@ -271,7 +281,7 @@ void expanderButtonReact() {
     }
 
 
-    // Button 7 - Held Release - RM_ALARM_SET -> Save new alarm time, Exit alarm set mode
+    // Button 7 - Long click - RM_ALARM_SET -> Save new alarm time, Exit alarm set mode
     if (is_new_of_type(button_read[7], MCP_LONG_CLICK) && Run_Mode == RM_ALARM_SET) {
 
       alarm_time[HOUR] = temp_time[HOUR];
@@ -294,7 +304,7 @@ void expanderButtonReact() {
     }
 
 
-    // Button 7 - Long click - RM_ALARM_SET -> Change alarm mode
+    // Button 7 - Click - RM_ALARM_SET -> Change alarm mode
     if (is_new_of_type(button_read[7], MCP_CLICK) && Run_Mode == RM_ALARM_SET) {
 
       alarm_mode++;

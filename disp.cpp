@@ -198,7 +198,7 @@ void displayUpdate() {
 
 
   if (Run_Mode != RM_ALARM_SET) {
-    if (alarm_mode != DISABLED) {
+    if (alarm_enabled != DISABLED) {
       dot_state[3] = true;
     }
     else {

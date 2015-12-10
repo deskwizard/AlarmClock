@@ -49,6 +49,7 @@ extern uint8_t Run_Mode;
 extern uint8_t alarm_time[2];
 extern bool alarm_handled;
 extern uint8_t alarm_type;
+extern bool alarm_enabled;
 
 // Routines
 void hwCheck();

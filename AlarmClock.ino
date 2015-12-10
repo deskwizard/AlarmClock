@@ -22,6 +22,7 @@ uint16_t disp_update_delay = 1000;
 uint8_t alarm_time[2] = {0, 0}; // Run_Mode = RM_ALARM_TRIG -  (Hour, Minute)
 bool alarm_handled = 0;
 uint8_t alarm_mode;
+bool alarm_enabled = 0;
 
 // Media state variables 
 bool stateFM = 0;

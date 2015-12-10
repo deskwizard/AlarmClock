@@ -150,7 +150,7 @@ void alarmCheck() {
   }
 
   // Check for alarm (Will need modifications)
-  if ((alarm_time[HOUR] == time.Hour && alarm_time[MINUTE] == time.Minute) && !alarm_handled && Run_Mode != RM_ALARM_TRIG && alarm_mode != 0) {
+  if ((alarm_time[HOUR] == time.Hour && alarm_time[MINUTE] == time.Minute) && !alarm_handled && Run_Mode != RM_ALARM_TRIG && alarm_enabled != 0) {
     Run_Mode = RM_ALARM_TRIG;
     if (alarm_mode == FM) {
       radioPower();

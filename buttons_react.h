@@ -31,6 +31,7 @@ extern uint8_t temp_time[3];
 extern uint16_t temp_date[3];
 extern bool dot_state[4];
 extern bool alarm_handled;
+extern bool alarm_enabled;
 extern uint8_t Media_Mode;
 
 #endif
