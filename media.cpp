@@ -175,7 +175,7 @@ void radioPower() {
     radio.setMute(false);
     savedFreq = eepromRead16(FMFREQ_LADDR, FMFREQ_HADDR);
     radio.setFrequency(savedFreq);
-    radio.setVolume(15); // TEMPORARY (0-15)
+    radio.setVolume(2); // TEMPORARY (0-15)
     setAudioOut(FM);
 #ifdef _RADIO_DEBUG
     radioDebug();
