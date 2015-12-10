@@ -163,7 +163,7 @@ void alarmCheck() {
   if (!alarm_handled && Run_Mode == RM_ALARM_TRIG) { // If alarm is triggered and not handled...
     // Flash display
     if (alarm_flash_state) {
-      displayBrightness(31);
+      displayBrightness(15);
     }
     else {
       displayBrightness(2);
