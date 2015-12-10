@@ -28,8 +28,11 @@
 #define flash_delay 500
 extern uint16_t disp_update_delay;
 
-// Alarm
+
 #define DISABLED 0
+#define ENABLED 1
+
+// Alarm
 #define BEEP 1  // only for alarm
 #define FM   2
 #define MP3  3

@@ -29,27 +29,32 @@ void mediaChange() {
       Serial.println(F("Turn on BT"));
       stateBT = 1;
       displayMode(BT);
+      Media_Mode = BT;
       // lastMedia = BT; // Still not sure about BT
     }
     else if (stateBT == 1) {
       // turn off BT (temporary for debug)
       Serial.println(F("Turn off BT"));
+      Media_Mode = DISABLED; // debug while no bt
       stateBT = 0;
       // turn on radio
       radioPower();
       lastMedia = FM;
     }
   }
+#ifdef _SERIAL_DEBUG
   Serial.print(F("lastMedia: "));
   Serial.println(lastMedia);
   Serial.println();
-
+  Serial.print(F("Media mode: "));
+  Serial.println(Media_Mode);
+#endif
   EEPROM.update(LASTMEDIA_ADDR, lastMedia);
 }
 
 void mediaPower() {
 
-  if ((stateFM + stateMP3 + stateBT) == 0) { // if everything is off
+  if ((stateFM + stateMP3 + stateBT) == DISABLED) { // if everything is off
     // use lastMedia to start the last used media source (not sure what to do with BT...)
 
     if (lastMedia == FM) {
@@ -63,20 +68,27 @@ void mediaPower() {
 
   }
   else { // something is on
-    if (stateFM == 1) {
+    if (stateFM == ENABLED) {
       // turn off radio
       radioPower();
     }
-    else if (stateMP3 == 1) {
+    else if (stateMP3 == ENABLED) {
       // turn off mp3 module
       mp3Power();
     }
-    else if (stateBT == 1) {
+    else if (stateBT == ENABLED) {
       // turn off BT
       Serial.println(F("power - Turn off BT"));
+      Media_Mode = DISABLED;
     }
     displayMode(DISABLED);
   }
+
+#ifdef _SERIAL_DEBUG
+  Serial.print(F("Media mode: "));
+  Serial.println(Media_Mode);
+#endif
+
 }
 
 void mp3Power() {
@@ -84,13 +96,15 @@ void mp3Power() {
     // turn off
     setGPIO(MP3_POWER, LOW);
     setAudioOut(DISABLED);
-    stateMP3 = 0;
+    Media_Mode = DISABLED;
+    stateMP3 = DISABLED;
   }
   else {
     // turn on
     setGPIO(MP3_POWER, HIGH);
     setAudioOut(MP3);
-    stateMP3 = 1;
+    Media_Mode = MP3;
+    stateMP3 = ENABLED;
     if (Run_Mode != RM_ALARM_TRIG) {
       displayMode(MP3);
     }
@@ -152,6 +166,7 @@ void radioPower() {
   // Powers up the radio if its powered down, power it down if its powered up
 
   if (stateFM == OFF) {
+    Media_Mode = FM;
     stateFM = ON;
     radio.init();
     radio.setBand(RADIO_BAND_FM);
@@ -176,6 +191,7 @@ void radioPower() {
     eepromUpdate16(FMFREQ_LADDR, FMFREQ_HADDR, savedFreq);
     radio.term(); // Turn off RDA
     setAudioOut(DISABLED);
+    Media_Mode = DISABLED;
     stateFM = OFF;
   }
 

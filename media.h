@@ -25,6 +25,7 @@
 extern bool stateFM;
 extern bool stateMP3;
 extern bool stateBT;
+extern uint8_t Media_Mode;
 
 void setAudioOut(uint8_t media_mode);
 void mediaPower();

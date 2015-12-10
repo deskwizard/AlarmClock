@@ -74,49 +74,39 @@ void expanderButtonReact() {
   if (Run_Mode == RM_TIME_DISP) {
 
     // Button 0 - Held Down - RM_TIME_DISP -> Enter time set mode
-    if (is_new_of_type(button_read[0], MCP_HELD_DOWN)) {
+    if (is_new_of_type(button_read[0], MCP_LONG_CLICK) && Media_Mode == DISABLED) {
       temp_time[HOUR] = time.Hour;
       temp_time[MINUTE] = time.Minute;
       temp_time[SECOND] = time.Second;
       Run_Mode = RM_TIME_SET;
-#ifdef _TIME_PRINT
+#ifdef _SERIAL_DEBUG
       Serial.println(F("Run_Mode RM_TIME_SET"));
+      Serial.print(F("Media mode: "));
+      Serial.println(Media_Mode);
       Serial.print(time.Hour);
       Serial.print(F(":"));
       Serial.print(time.Minute);
       Serial.print(F(":"));
       Serial.println(time.Second);
 #endif
+      return;
     }
 
-    // Button 7 - Held Down - RM_TIME_DISP -> Enter time set mode
-    if (is_new_of_type(button_read[7], MCP_HELD_DOWN)) {
+    // Button 7 - Held Down - RM_TIME_DISP -> Enter alarm set mode
+    if (is_new_of_type(button_read[7], MCP_LONG_CLICK) && Media_Mode == DISABLED) {
       temp_time[HOUR] = alarm_time[HOUR];
       temp_time[MINUTE] = alarm_time[MINUTE];
       Run_Mode = RM_ALARM_SET;
       displayUpdate();
-#ifdef _ALARM_PRINT
+#ifdef _SERIAL_DEBUG
       Serial.println(F("Run_Mode RM_Alarm_SET"));
       Serial.print(temp_time[HOUR]);
       Serial.print(F(":"));
       Serial.println(temp_time[MINUTE]);
 #endif
+      return;
     }
 
-
-    // Button 7 - Long click - RM_TIME_DISP -> Change alarm mode
-    if (is_new_of_type(button_read[7], MCP_LONG_CLICK)) {
-
-      alarm_mode++;
-      if (alarm_mode > MP3) {
-        alarm_mode = 0;
-      }
-      displayMode(alarm_mode);
-#ifdef _SERIAL_DEBUG
-      Serial.println(F("Alarm mode change:"));
-      Serial.println(alarm_mode);
-#endif
-    }
 
     // ****** Media handling buttons ******
 
@@ -129,7 +119,7 @@ void expanderButtonReact() {
 #endif
     }
 
-    if (is_new_of_type(button_read[0], MCP_LONG_CLICK)) {
+    if (is_new_of_type(button_read[0], MCP_LONG_CLICK) && Media_Mode != DISABLED) {
       mediaChange();
 #ifdef _SERIAL_DEBUG
       Serial.print(F("Media Change"));
@@ -263,7 +253,7 @@ void expanderButtonReact() {
 
 
     // Button 0 - Held Release - RM_TIME_SET -> Reset seconds, Save new time, Exit time set mode
-    if (is_new_of_type(button_read[0], MCP_HELD_RELEASE) && Run_Mode == RM_TIME_SET) {
+    if (is_new_of_type(button_read[0], MCP_LONG_CLICK) && Run_Mode == RM_TIME_SET) {
       // Reset seconds
       time.Hour = temp_time[HOUR];
       time.Minute = temp_time[MINUTE];
@@ -282,7 +272,7 @@ void expanderButtonReact() {
 
 
     // Button 7 - Held Release - RM_ALARM_SET -> Save new alarm time, Exit alarm set mode
-    if (is_new_of_type(button_read[7], MCP_HELD_RELEASE) && Run_Mode == RM_ALARM_SET) {
+    if (is_new_of_type(button_read[7], MCP_LONG_CLICK) && Run_Mode == RM_ALARM_SET) {
 
       alarm_time[HOUR] = temp_time[HOUR];
       alarm_time[MINUTE] = temp_time[MINUTE];
@@ -303,6 +293,23 @@ void expanderButtonReact() {
       displayUpdate();
     }
 
+
+    // Button 7 - Long click - RM_ALARM_SET -> Change alarm mode
+    if (is_new_of_type(button_read[7], MCP_CLICK) && Run_Mode == RM_ALARM_SET) {
+
+      alarm_mode++;
+      if (alarm_mode > MP3) {
+        alarm_mode = 0;
+      }
+      displayMode(alarm_mode);
+#ifdef _SERIAL_DEBUG
+      Serial.println(F("Alarm mode change:"));
+      Serial.println(alarm_mode);
+#endif
+    }
+
+
+    // Value change buttons
 
     if (is_new_of_type(button_read[1], MCP_CLICK) || is_new_of_type(button_read[1], MCP_DOUBLE_CLICK)) {
       --temp_time[HOUR];
