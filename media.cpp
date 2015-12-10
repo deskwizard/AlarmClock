@@ -11,7 +11,7 @@ char sFreq[12]; // frequency string
 uint16_t savedFreq;
 
 uint8_t lastMedia = EEPROM.read(LASTMEDIA_ADDR);
-uint8_t volume = 0;
+uint8_t volume = EEPROM.read(VOLUME_ADDR);
 
 void mediaChange() {
 
@@ -83,6 +83,8 @@ void mediaPower() {
       Media_Mode = DISABLED;
     }
     displayMode(DISABLED);
+    // Save volume
+    EEPROM.update(VOLUME_ADDR, volume);
   }
 
 #ifdef _SERIAL_DEBUG

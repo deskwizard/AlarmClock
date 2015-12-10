@@ -1,8 +1,6 @@
-#ifndef _FAIL_H_
-#define _FAIL_H_
+#ifndef _DISP_H_
+#define _DISP_H_
 
-//#include "LedControl.h" // MAX7221 Library
-//#include <Wire.h> // I2C library
 #include <Time.h> // Time library
 #include <DS1307RTC.h>  // DSxxxx Library
 

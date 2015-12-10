@@ -20,8 +20,6 @@ struct GPIOHandling
 
 
 // GPIO outputs
-
-// Speaker output and power source input should be switched.... (7 and 8)
 #define SPK_OUT 7
 
 // GPIO[0] = 0 (Arduino), 5 (Pin 5), INPUT, 0 (Default state), 0 (timeout), 0 (Timeout request time)

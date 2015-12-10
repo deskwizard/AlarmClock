@@ -5,7 +5,7 @@
 #define _SERIAL_DEBUG     // Serial debugging
 //#define _RTC_DEBUG        // RTC debugging
 //#define _CDS_DEBUG     // Serial debugging
-#define DEBUG_LED 13
+//#define DEBUG_LED 13
 
 // Mode handling
 #define RM_TIME_DISP 0

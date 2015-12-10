@@ -4,7 +4,6 @@
 #include "media.h"
 
 #include <EEPROM.h> // Temporary for saving alarm 
-
 #include <MCP23017.h>           // Include MCP23017 library
 
 // Starts I2C bus for MCP on address 'address', prepare INT(which) for 'button_count' buttons
@@ -204,14 +203,14 @@ void expanderButtonReact() {
         if (is_new_of_type(button_read[1], MCP_HELD_RELEASE)) {
           mp3Rew(0);
 #ifdef _SERIAL_DEBUG
-          Serial.print(F("MP3 Rew start"));
+          Serial.print(F("MP3 Rew stop"));
           Serial.println();
 #endif
         }
         if (is_new_of_type(button_read[2], MCP_HELD_RELEASE)) {
           mp3FF(0);
 #ifdef _SERIAL_DEBUG
-          Serial.print(F("MP3 FF start"));
+          Serial.print(F("MP3 FF stop"));
           Serial.println();
 #endif
         }
