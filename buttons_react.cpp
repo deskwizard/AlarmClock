@@ -128,132 +128,103 @@ void expanderButtonReact() {
       Serial.println();
 #endif
     }
-
-    if (is_new_of_type(button_read[0], MCP_LONG_CLICK) && Media_Mode != DISABLED) {
-      mediaChange();
+    if (Media_Mode != DISABLED) {
+      if (is_new_of_type(button_read[0], MCP_LONG_CLICK)) {
+        mediaChange();
 #ifdef _SERIAL_DEBUG
-      Serial.print(F("Media Change"));
-      Serial.println();
-#endif
-    }
-
-    if (stateFM) {  // If FM is active
-      if (is_new_of_type(button_read[1], MCP_CLICK)) {
-        radioSeek(DOWN);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("Radio seek down"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[2], MCP_CLICK)) {
-        radioSeek(UP);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("Radio seek up"));
-        Serial.println();
-#endif
-      }
-    }
-    else if (stateMP3) { // If MP3 is active
-
-      // ********* MP3 module Next/Prev/FF/Rew handling ************
-      if (is_new_of_type(button_read[1], MCP_CLICK)) {
-        mp3Prev();
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Previous"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[2], MCP_CLICK)) {
-        mp3Next();
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Next"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[1], MCP_HELD_DOWN)) {
-        mp3Rew(1);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Rew start"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[2], MCP_HELD_DOWN)) {
-        mp3FF(1);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 FF start"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[1], MCP_HELD_RELEASE)) {
-        mp3Rew(0);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Rew start"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[2], MCP_HELD_RELEASE)) {
-        mp3FF(0);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 FF start"));
+        Serial.print(F("Media Change"));
         Serial.println();
 #endif
       }
 
-      // ********* MP3 module volume handling ************
 
       if (is_new_of_type(button_read[3], MCP_CLICK)) {
-        mp3VolDown();
+        setVolume(DOWN);
 #ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Vol-"));
+        Serial.print(F("Vol-"));
         Serial.println();
 #endif
       }
       if (is_new_of_type(button_read[4], MCP_CLICK)) {
-        mp3VolUp();
+        setVolume(UP);
 #ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Vol+"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[3], MCP_HELD_DOWN)) {
-        mp3VolDown(1);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Vol-- start"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[4], MCP_HELD_DOWN)) {
-        mp3VolUp(1);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Vol++ start"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[3], MCP_HELD_RELEASE)) {
-        mp3VolDown(0);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Vol-- end"));
-        Serial.println();
-#endif
-      }
-      if (is_new_of_type(button_read[4], MCP_HELD_RELEASE)) {
-        mp3VolUp(0);
-#ifdef _SERIAL_DEBUG
-        Serial.print(F("MP3 Vol++ end"));
+        Serial.print(F("Vol+"));
         Serial.println();
 #endif
       }
 
 
-      else if (stateBT) {
+      if (stateFM) {  // If FM is active
+        if (is_new_of_type(button_read[1], MCP_CLICK)) {
+          radioSeek(DOWN);
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("Radio seek down"));
+          Serial.println();
+#endif
+        }
+        if (is_new_of_type(button_read[2], MCP_CLICK)) {
+          radioSeek(UP);
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("Radio seek up"));
+          Serial.println();
+#endif
+        }
+      }
+      else if (stateMP3) { // If MP3 is active
+
+        // ********* MP3 module Next/Prev/FF/Rew handling ************
+        if (is_new_of_type(button_read[1], MCP_CLICK)) {
+          mp3Prev();
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("MP3 Previous"));
+          Serial.println();
+#endif
+        }
+        if (is_new_of_type(button_read[2], MCP_CLICK)) {
+          mp3Next();
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("MP3 Next"));
+          Serial.println();
+#endif
+        }
+        if (is_new_of_type(button_read[1], MCP_HELD_DOWN)) {
+          mp3Rew(1);
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("MP3 Rew start"));
+          Serial.println();
+#endif
+        }
+        if (is_new_of_type(button_read[2], MCP_HELD_DOWN)) {
+          mp3FF(1);
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("MP3 FF start"));
+          Serial.println();
+#endif
+        }
+        if (is_new_of_type(button_read[1], MCP_HELD_RELEASE)) {
+          mp3Rew(0);
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("MP3 Rew start"));
+          Serial.println();
+#endif
+        }
+        if (is_new_of_type(button_read[2], MCP_HELD_RELEASE)) {
+          mp3FF(0);
+#ifdef _SERIAL_DEBUG
+          Serial.print(F("MP3 FF start"));
+          Serial.println();
+#endif
+        }
+
+        else if (stateBT) {
+
+        }
+
+
+        // *** BUTTONS FOR DEBUG
 
       }
-
-
-      // *** BUTTONS FOR DEBUG
-
-    }
-
+    } // End Media_Mode != DISABLED
   } // End Run mode RM_TIME_DISP
 
 

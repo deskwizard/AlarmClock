@@ -30,13 +30,15 @@ extern uint8_t Media_Mode;
 void setAudioOut(uint8_t media_mode);
 void mediaPower();
 void mediaChange();
+void setVolume(bool _direction);
 void radioPower();
-void radioSeek(bool direction);
+void radioSeek(bool _direction);
 void mp3Power();
 void mp3Next();
 void mp3Prev();
 void mp3FF(bool _start);
 void mp3Rew(bool _start);
+// Temporary: 
 void mp3VolDown();
 void mp3VolUp();
 void mp3VolDown(bool _start);

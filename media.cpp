@@ -11,6 +11,7 @@ char sFreq[12]; // frequency string
 uint16_t savedFreq;
 
 uint8_t lastMedia = EEPROM.read(LASTMEDIA_ADDR);
+uint8_t volume = 0;
 
 void mediaChange() {
 
@@ -91,6 +92,32 @@ void mediaPower() {
 
 }
 
+void setVolume(bool _direction) {
+
+    if (_direction) { // volume up
+      volume = volume + 4;
+      if (volume > 124) {
+        volume = 124;
+      }
+    }
+    else { // volume down
+      volume = volume - 4;
+      if (volume > 127) {
+        volume = 0;
+      }
+    }
+
+  Wire.beginTransmission(0x50); // transmit to address 0x50
+  Wire.write(0xF9);            // Pot0
+  Wire.write(volume);          // sends pot0 value byte
+  Wire.endTransmission();     // stop transmitting
+
+#ifdef _SERIAL_DEBUG
+  Serial.print(F("Write volume: "));
+  Serial.println(volume);
+#endif
+}
+
 void mp3Power() {
   if (stateMP3 == 1) {
     // turn off
@@ -136,32 +163,6 @@ void mp3Rew(bool _start) {
   }
 }
 
-void mp3VolUp() {
-  setGPIO(MP3_VOLU, HIGH, 1);
-}
-void mp3VolDown() {
-  setGPIO(MP3_VOLD, HIGH, 1);
-}
-
-void mp3VolDown(bool _start) {
-  if (_start) {
-    setGPIO(MP3_VOLD, HIGH);
-  }
-  else {
-    setGPIO(MP3_VOLD, LOW);
-  }
-}
-
-void mp3VolUp(bool _start) {
-  if (_start) {
-    setGPIO(MP3_VOLU, HIGH);
-  }
-  else {
-    setGPIO(MP3_VOLU, LOW);
-  }
-}
-
-
 void radioPower() {
   // Powers up the radio if its powered down, power it down if its powered up
 
@@ -175,7 +176,7 @@ void radioPower() {
     radio.setMute(false);
     savedFreq = eepromRead16(FMFREQ_LADDR, FMFREQ_HADDR);
     radio.setFrequency(savedFreq);
-    radio.setVolume(2); // TEMPORARY (0-15)
+    radio.setVolume(2); // Initial radio volume, adjust for sources balance
     setAudioOut(FM);
 #ifdef _RADIO_DEBUG
     radioDebug();
@@ -197,8 +198,8 @@ void radioPower() {
 
 }
 
-void radioSeek(bool direction) {
-  if (direction == UP) {
+void radioSeek(bool _direction) {
+  if (_direction == UP) {
     radio.seekUp(true);
   }
   else {
