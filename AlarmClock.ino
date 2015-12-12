@@ -48,7 +48,7 @@ void setup() {
 void loop() {
 
   // Automatic brightness
-  displayAutoBrightness(); // needs fixing..?
+  displayAutoBrightness();
 
   //  Button handling
   expanderButtonReact();

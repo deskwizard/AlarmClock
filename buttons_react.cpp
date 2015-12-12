@@ -97,7 +97,7 @@ void expanderButtonReact() {
       temp_time[HOUR] = alarm_time[HOUR];
       temp_time[MINUTE] = alarm_time[MINUTE];
       Run_Mode = RM_ALARM_SET;
-      displayUpdate();
+      displayTime();
 #ifdef _SERIAL_DEBUG
       Serial.println(F("Run_Mode RM_Alarm_SET"));
       Serial.print(temp_time[HOUR]);
@@ -248,7 +248,7 @@ void expanderButtonReact() {
 
       dot_state[1] = 0; // Turn off dot period that was flashing
       Run_Mode = RM_TIME_DISP;
-      displayUpdate();
+      displayTime();
     }
 
 
@@ -271,7 +271,7 @@ void expanderButtonReact() {
 #endif
       dot_state[3] = 0; // Turn off dot period that was flashing
       Run_Mode = RM_TIME_DISP;
-      displayUpdate();
+      displayTime();
     }
 
 

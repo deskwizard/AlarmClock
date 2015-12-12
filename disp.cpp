@@ -18,7 +18,7 @@ void displayStart() {
   disp.setIntensity(0, 0);  // Set the brightness minimum value on start
   disp.clearDisplay(0);     // Clear the display
   disp.shutdown(0, false);  // Wake up MAX7221 (get out of power saving mode)
-  displayUpdate();
+  displayTime();
 }
 
 void displayAutoBrightness() {
@@ -152,7 +152,7 @@ void displayFrequency(uint16_t _frequency) {
   disp_update_delay = 1500; // Since default delay is 1000, if we want to display for 500ms, we need 1500
 }
 
-void displayUpdate() {
+void displayTime() {
 
   // Check for RTC presence, if its not, display "err0" and return
   if (!RTC.read(time)) {

@@ -19,7 +19,7 @@ void configureGPIO() {
         digitalWrite(GPIO[pin].pin, GPIO[pin].state);
       }
       else {
-        GPIO[pin].state = readGPIO(0);
+        GPIO[pin].state = readGPIO(0); // BUG: that looks wrong, double check
       }
     }
   }
@@ -113,7 +113,7 @@ void timedEvents() {
 
   // Display update code - Updates display every second or immediately
   if ((uint32_t)(currentMillis - prevDispMillis) >= disp_update_delay ) {
-    displayUpdate();  // Update display
+    displayTime();  // Update display
     prevDispMillis = currentMillis;
     if (Run_Mode == RM_TIME_DISP || Run_Mode == RM_ALARM_TRIG) {
       alarmCheck();
