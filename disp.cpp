@@ -10,8 +10,6 @@ LedControl disp = LedControl(11, 13, 12, 1); // DataIn (MOSI), CLK (SCK), LOAD (
 long sensorCount = 0;
 long sensorValue = 0;
 
-uint32_t previousFlashMillis = 0;
-
 void displayStart() {
   // 7 segment display initialization
   disp.setScanLimit(0, 4);  // Limit scanning to 4 digits
@@ -88,6 +86,18 @@ void displayError(uint8_t _errno) {
   disp.setChar(0, 3, 'c', false);
   }
 */
+uint32_t prevDispMillis = 0;
+
+bool displayNeedsUpdate() {
+  uint32_t currentMillis = millis();
+  if ((uint32_t)(currentMillis - prevDispMillis) >= disp_update_delay) {
+    prevDispMillis = currentMillis;
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
 
 void displayMode(uint8_t _mode) {
 
@@ -122,7 +132,8 @@ void displayMode(uint8_t _mode) {
     disp.setRow(0, 2, 62);
     disp.setChar(0, 3, 'E', 0);
   }
-  disp_update_delay = 1500; // Since default delay is 1000, if we want to display for 500ms, we need 1500
+  prevDispMillis = millis();
+  disp_update_delay = 500;
 }
 
 void displayFrequency(uint16_t _frequency) {
@@ -138,7 +149,7 @@ void displayFrequency(uint16_t _frequency) {
   _frequency = _frequency / 10;
   d0 = _frequency % 10;
 
-  if (d0 == 0) { // If the first digit is 0 and we're in 12H mode...
+  if (d0 == 0) { // If the first digit is 0
     disp.setChar(0, 0, ' ', false);
   }
   else {
@@ -149,7 +160,9 @@ void displayFrequency(uint16_t _frequency) {
   disp.setDigit(0, 1, d1, false);
   disp.setDigit(0, 2, d2, true);
   disp.setDigit(0, 3, d3, false);
-  disp_update_delay = 1500; // Since default delay is 1000, if we want to display for 500ms, we need 1500
+
+  prevDispMillis = millis();
+  disp_update_delay = 500;
 }
 
 void displayTime() {
@@ -225,12 +238,15 @@ void displayTime() {
   disp.setDigit(0, 1, hours_d2, dot_state[1]);
   disp.setDigit(0, 2, minutes_d1, dot_state[2]);
   disp.setDigit(0, 3, minutes_d2, dot_state[3]);
+
   if (Run_Mode == RM_TIME_SET || Run_Mode == RM_ALARM_SET) {
     disp_update_delay = 0;
   }
   else {
     disp_update_delay = 1000;
   }
+
+  prevDispMillis = millis();
 }
 
 

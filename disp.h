@@ -23,6 +23,7 @@ void displayError(uint8_t _errno);
 void displayBrightness(uint8_t _value);
 void displayAutoBrightness();
 void displayTime();
+bool displayNeedsUpdate();
 void displayFrequency(uint16_t _frequency);
 //void displayTemp();
 

@@ -126,12 +126,12 @@ void mp3Power() {
   }
   else {
     // turn on
-    setGPIO(MP3_POWER, HIGH);
-    setAudioOut(MP3);
-    Media_Mode = MP3;
     if (Run_Mode != RM_ALARM_TRIG) {
       displayMode(MP3);
     }
+    setGPIO(MP3_POWER, HIGH);
+    setAudioOut(MP3);
+    Media_Mode = MP3;
   }
 
 }
@@ -173,6 +173,11 @@ void radioPower() {
   }
   else {
     Media_Mode = FM;
+
+    if (Run_Mode != RM_ALARM_TRIG) {
+      displayMode(FM);
+    }
+
     radio.init();
     radio.setBand(RADIO_BAND_FM);
     radio.setBassBoost(true);

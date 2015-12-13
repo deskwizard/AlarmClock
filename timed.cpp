@@ -79,7 +79,7 @@ void setGPIO(uint8_t pin, uint8_t value, uint16_t timeout) {
 
 // Timed events handling
 
-uint32_t prevDispMillis = 0;
+//uint32_t prevDispMillis = 0;
 uint32_t prevFlashMillis = 0;
 uint32_t prevMelodyMillis = 0;
 bool alarm_flash_state;
@@ -106,15 +106,13 @@ void timedEvents() {
       GPIO[x].timeout = 0;
       setGPIO(x, INV);
     }
-
   }
 
   //*****************************
 
-  // Display update code - Updates display every second or immediately
-  if ((uint32_t)(currentMillis - prevDispMillis) >= disp_update_delay ) {
+  // Check if the display needs updating
+  if (displayNeedsUpdate() ) {
     displayTime();  // Update display
-    prevDispMillis = currentMillis;
     if (Run_Mode == RM_TIME_DISP || Run_Mode == RM_ALARM_TRIG) {
       alarmCheck();
     }
@@ -265,7 +263,6 @@ void hwCheck() {
   Serial.println();
 
 }
-
 
 
 // write a register value using 2 bytes into the Wire.
