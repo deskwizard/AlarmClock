@@ -5,14 +5,11 @@
 #include "LedControl.h"
 LedControl disp = LedControl(11, 13, 12, 1); // DataIn (MOSI), CLK (SCK), LOAD (CS), Qty of MAX7221s
 
-// Auto-Brightness related
 #define CdS_Pin A0
-long sensorCount = 0;
-long sensorValue = 0;
 
 void displayStart() {
   // 7 segment display initialization
-  disp.setScanLimit(0, 4);  // Limit scanning to 4 digits
+  disp.setScanLimit(0, 8);  // Limit scanning to 4 digits
   disp.setIntensity(0, 0);  // Set the brightness minimum value on start
   disp.clearDisplay(0);     // Clear the display
   disp.shutdown(0, false);  // Wake up MAX7221 (get out of power saving mode)
@@ -20,14 +17,22 @@ void displayStart() {
 }
 
 void displayAutoBrightness() {
+  const uint8_t readCounts = 100;
+  static uint8_t sensorCount = 0;
+  static uint32_t sensorValue = 0;
+  static uint8_t lastBrightnessValue = 0;
+
   if (Run_Mode != RM_ALARM_TRIG) {
     sensorValue = sensorValue + analogRead(CdS_Pin);
     sensorCount++;
 
-    if (sensorCount == 100) {
-      displayBrightness((sensorValue / 100) >> 6); // (0 - 15)
-      sensorCount = 0;
+    if (sensorCount == readCounts) {  // Averaging
+      if (((sensorValue / readCounts) >> 6) - lastBrightnessValue <= 2) {
+        displayBrightness((sensorValue / readCounts) >> 6); // (0 - 15)
+      }
+      lastBrightnessValue = (sensorValue / readCounts) >> 6;
       sensorValue = 0;
+      sensorCount = 0;
     }
   }
 }

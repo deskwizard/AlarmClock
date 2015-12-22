@@ -19,7 +19,6 @@ uint16_t temp_date[3] = {0};
 bool dot_state[4] = {0};
 uint16_t disp_update_delay = 1000;
 
-// To be replace with interrupt and DS3231 alarm register
 uint8_t alarm_time[2] = {0, 0}; // Run_Mode = RM_ALARM_TRIG -  (Hour, Minute)
 bool alarm_handled = 0;
 uint8_t alarm_mode = 1; // Default to beep
