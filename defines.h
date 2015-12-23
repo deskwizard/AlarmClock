@@ -6,7 +6,7 @@
 #define _SERIAL_DEBUG     // Serial debugging
 //#define _RTC_DEBUG        // RTC debugging
 //#define _CDS_DEBUG     // Serial debugging
-
+#define _ERR_DEBUG
 #define DISABLED 0
 #define ENABLED 1
 

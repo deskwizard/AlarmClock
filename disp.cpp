@@ -16,48 +16,68 @@ void displayStart() {
   displayTime();
 }
 
-void displayAutoBrightness() {
+void displayBrightness(uint8_t _forcedValue) {
   const uint8_t readCounts = 100;
   static uint8_t sensorCount = 0;
   static uint32_t sensorValue = 0;
   static uint8_t lastBrightnessValue = 0;
+  uint8_t brightnessValue = 0;
 
   if (Run_Mode != RM_ALARM_TRIG) {
     sensorValue = sensorValue + analogRead(CdS_Pin);
     sensorCount++;
 
     if (sensorCount == readCounts) {  // Averaging
-      if (((sensorValue / readCounts) >> 6) - lastBrightnessValue <= 2) {
-        displayBrightness((sensorValue / readCounts) >> 6); // (0 - 15)
+      brightnessValue = ((sensorValue / readCounts) / 64);
+      if (brightnessValue - lastBrightnessValue <= 2) {
+
+#ifdef _CDS_DEBUG
+        Serial.print(F("brightnessValue :   "));
+        Serial.println(brightnessValue);
+#endif
+        if (readGPIO(BAT_DETECT) == LOW) { // Check BAT_DETECT value (LOW: Power source == battery)
+          brightnessValue = 0;
+        }
+        disp.setIntensity(0, brightnessValue);  // Set the brightness
+
       }
-      lastBrightnessValue = (sensorValue / readCounts) >> 6;
+      lastBrightnessValue = brightnessValue;
       sensorValue = 0;
       sensorCount = 0;
     }
   }
-}
-
-void displayBrightness(uint8_t _value) {
-
+  else if (_forcedValue != NULL){ // We are in alarm triggered mode, so pass the value set by flash directly
 #ifdef _CDS_DEBUG
-  Serial.print(F("_value :   "));
-  Serial.println(_value);
-  Serial.println();
+    Serial.print(F("_forcedValue :   "));
+    Serial.println(_forcedValue);
+    Serial.println();
 #endif
-  if (readGPIO(BAT_DETECT) == LOW) { // Check BAT_DETECT value (LOW: Power source == battery)
-    _value = 0;
+    disp.setIntensity(0, _forcedValue);
   }
-  disp.setIntensity(0, _value);  // Set the brightness
 }
 
 void displayError(uint8_t _errno) {
-  // Displays error # on 7 segment display
-  disp.clearDisplay(0);     // Clear the display
-  disp.setChar(0, 0, 'e', false);
-  disp.setRow(0, 1, 0x05);  // r
-  disp.setRow(0, 2, 0x05);  // r
-  disp.setDigit(0, 3, _errno, false);
+
+  switch (_errno) {
+
+    case 42:  // RTC time invalid
+
+      break;
+    case 1:  // DS3231 not detected
+    case 2:  // MCP23017 not detected
+      disp.setChar(0, 0, 'e', false);
+      disp.setRow(0, 1, 0x05);  // r
+      disp.setRow(0, 2, 0x05);  // r
+      disp.setDigit(0, 3, _errno, false);
+      break;
+    case 3:  // RDA5807M not detected
+    case 4:  // DS3909 not detected (temporary device for testing)
+      // Figure out what to do
+      break;
+  }
+
 }
+
 
 /*
   void displayTemp() {
@@ -172,12 +192,6 @@ void displayFrequency(uint16_t _frequency) {
 
 void displayTime() {
 
-  // Check for RTC presence, if its not, display "err0" and return
-  if (!RTC.read(time)) {
-    displayError(0);
-    return;
-  }
-
   uint8_t time_minutes;
   uint8_t time_hours;
   uint8_t hours_d1;
@@ -196,6 +210,7 @@ void displayTime() {
       break;
     case RM_TIME_DISP:
     case RM_ALARM_TRIG:
+      RTC.read(time);
       time_minutes = time.Minute;
       time_hours = time.Hour;
       break;

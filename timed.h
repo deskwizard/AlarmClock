@@ -17,7 +17,7 @@ extern uint8_t alarm_type;
 extern bool alarm_enabled;
 
 // Routines
-void hwCheck();
+void i2cCheck();
 void timedEvents();
 void alarmCheck();
 void playMelody();

@@ -8,6 +8,8 @@
 #include "GPIO.h"
 #include "media.h"
 
+uint8_t errorCode = 0;
+
 extern GPIOHandling GPIO[GPIO_PINS];
 
 void configureGPIO() {
@@ -77,19 +79,17 @@ void setGPIO(uint8_t pin, uint8_t value, uint16_t timeout) {
 }
 
 
-// Timed events handling
-
-//uint32_t prevDispMillis = 0;
+// ****** Timed events handling ******
 uint32_t prevFlashMillis = 0;
 uint32_t prevMelodyMillis = 0;
+uint32_t prevErrTestMillis = 0;
 bool alarm_flash_state;
 
 void timedEvents() {
 
   uint32_t currentMillis = millis();
 
-  // Check for GPIO timeouts
-
+  //*** Check for GPIO timeouts ***
   for (uint8_t x = 0; x < GPIO_PINS; x++) {
 
     if (((uint32_t)(currentMillis - GPIO[x].prevtime) >= GPIO[x].timeout) && GPIO[x].timeout != 0) {
@@ -110,8 +110,15 @@ void timedEvents() {
 
   //*****************************
 
+  // *** BUG: Change later, for testing
+  if ((uint32_t)(currentMillis - prevErrTestMillis) >= 60000) { // check for errors each 60 seconds
+    i2cCheck();
+    prevErrTestMillis = currentMillis;
+  }
+
+
   // Check if the display needs updating
-  if (displayNeedsUpdate() ) {
+  if (displayNeedsUpdate() && errorCode == 0) { // If we need to update and we don't have any errors...
     displayTime();  // Update display
     if (Run_Mode == RM_TIME_DISP || Run_Mode == RM_ALARM_TRIG) {
       alarmCheck();
@@ -198,70 +205,89 @@ void playMelody() {
 } // end play Melody
 
 
-// Check for external device presence (when possible...)
-void hwCheck() {
+// Check for i2c device presence
+void i2cCheck() {
+  uint8_t address;
+  /*    Returns error number according to this table:
+        0 = No errors
+        1 = RTC time invalid
+        2 = RTC not detected
+        3 = MCP23017 not detected
+        4 = RDA5807M not detected
+        5 = Potentiometer not detected (future use)
+  */
 
-  uint8_t error;
-  uint8_t address = 0x68; // Start with RTC
-
-  Wire.beginTransmission(address);
-  error = Wire.endTransmission();
-
-  if (error == 0)
-  {
-#ifdef _SERIAL_DEBUG
-    Serial.println(F("RTC Detected"));
-#endif
-  }
-  else
-  {
-#ifdef _SERIAL_DEBUG
-    Serial.println(F(" -- RTC NOT PRESENT! -- "));
-#endif
-    displayError(0);
-  }
-
-  address = 0x20; // MCP23017
-
+  // Check for DS3231 RTC presence
+  address = 0x68;
   Wire.beginTransmission(address);
 
-  error = Wire.endTransmission();
-
-  if (error == 0)
-  {
-#ifdef _SERIAL_DEBUG
-    Serial.println(F("MCP Detected"));
+  if (Wire.endTransmission()) {  // if not successful (0 = OK, 1 = Failed)
+    errorCode = 1;
+#ifdef _ERR_DEBUG
+    Serial.println(F(" -- DS3231     FAILED   --"));
 #endif
   }
-  else
+  else  // DS3231 detected...
   {
-#ifdef _SERIAL_DEBUG
-    Serial.println(F(" -- MCP NOT PRESENT! -- "));
+    Serial.println(F(" ++ DS3231     Detected ++"));
+    if (!RTC.read(time)) {  // Check if time is valid here (invalid = error# 42)
+      errorCode = 42;
+#ifdef _ERR_DEBUG
+      Serial.println(F(" -- RTC TIME IS INVALID --"));
+    }
+    else { // DS3231 detected and time is valid
+      Serial.println(F(" ++ RTC Time   Verified ++"));
 #endif
-    displayError(0);
+    }
   }
 
-  address = 0x11; // RDA5807
-
+  // Check for MCP23017 presence
+  address = 0x20;
   Wire.beginTransmission(address);
 
-  error = Wire.endTransmission();
-
-  if (error == 0)
-  {
-#ifdef _SERIAL_DEBUG
-    Serial.println(F("RDA Detected"));
+  if (Wire.endTransmission()) {  // if not successful (0 = OK, 1 = Failed)
+    errorCode = 2;
+#ifdef _ERR_DEBUG
+    Serial.println(F(" -- MCP23017   FAILED   --"));
+  }
+  else {
+    Serial.println(F(" ++ MCP23017   Detected ++"));
 #endif
   }
-  else
-  {
-#ifdef _SERIAL_DEBUG
-    Serial.println(F(" -- RDA NOT PRESENT! -- "));
-#endif
-    displayError(0);
-  }
-  Serial.println();
 
+  // Check for RDA5807 presence
+  address = 0x11;
+  Wire.beginTransmission(address);
+
+  if (Wire.endTransmission()) {  // if not successful (0 = OK, 1 = Failed)
+    errorCode = 3;
+#ifdef _ERR_DEBUG
+    Serial.println(F(" -- RDA5807M   FAILED   --"));
+  }
+  else {
+    Serial.println(F(" ++ RDA5807M   Detected ++"));
+#endif
+  }
+
+  // Check for DS3909 presence (To be replace by proper chip)
+  address = 0x50;
+  Wire.beginTransmission(address);
+
+  if (Wire.endTransmission()) {  // if not successful (0 = OK, 1 = Failed)
+    errorCode = 4;
+#ifdef _ERR_DEBUG
+    Serial.println(F(" -- DS3909     FAILED   --"));
+    Serial.println();
+  }
+  else {
+    Serial.println(F(" ++ DS3909     Detected ++"));
+    Serial.println();
+#endif
+  }
+
+  if (errorCode != 0) {  // If we have an error, display it
+    displayError(errorCode);
+  }
 }
 
 

@@ -62,6 +62,7 @@ void expanderButtonReact() {
           mp3Power();
         }
         Run_Mode = RM_TIME_DISP;
+        displayBrightness(NULL); 
         return;
       }
     }
@@ -113,7 +114,7 @@ void expanderButtonReact() {
       alarm_enabled = !alarm_enabled;
 
 #ifdef _SERIAL_DEBUG
-      Serial.println(F("Alarm enabled: "));
+      Serial.print(F("Alarm enabled: "));
       Serial.println(alarm_enabled);
 #endif
     }

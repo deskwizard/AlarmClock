@@ -35,7 +35,7 @@ void setup() {
 #endif
   TWBR = (F_CPU / 24992);
   configureGPIO();
-  hwCheck();           // Check for external device presence (whenever possible)
+  i2cCheck();             // Check for i2c device presence
   expanderStart();
   displayStart();         // 7 segment display initialization
 
@@ -47,7 +47,7 @@ void setup() {
 void loop() {
 
   // Automatic brightness
-  displayAutoBrightness();
+  displayBrightness(NULL); 
 
   //  Button handling
   expanderButtonReact();
