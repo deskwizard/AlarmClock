@@ -230,7 +230,8 @@ void i2cCheck() {
   else  // DS3231 detected...
   {
     Serial.println(F(" ++ DS3231     Detected ++"));
-    if (!RTC.read(time)) {  // Check if time is valid here (invalid = error# 42)
+    setSyncProvider(RTC.get);   // configure Time provider to RTC
+    if (timeStatus() != timeSet) {  // Check if time is valid here (invalid = error# 42)
       errorCode = 42;
 #ifdef _ERR_DEBUG
       Serial.println(F(" -- RTC TIME IS INVALID --"));

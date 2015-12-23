@@ -46,7 +46,7 @@ void displayBrightness(uint8_t _forcedValue) {
       sensorCount = 0;
     }
   }
-  else if (_forcedValue != NULL){ // We are in alarm triggered mode, so pass the value set by flash directly
+  else if (_forcedValue != NULL) { // We are in alarm triggered mode, so pass the value set by flash directly
 #ifdef _CDS_DEBUG
     Serial.print(F("_forcedValue :   "));
     Serial.println(_forcedValue);
@@ -71,6 +71,7 @@ void displayError(uint8_t _errno) {
       disp.setDigit(0, 3, _errno, false);
       break;
     case 3:  // RDA5807M not detected
+      break;
     case 4:  // DS3909 not detected (temporary device for testing)
       // Figure out what to do
       break;

@@ -1,0 +1,28 @@
+Total pins: 		Digital: 21 (6 analog)	+	6 PWM
+
+Requirements:
+
+i2c bus:			Digital: 2 (A4/A5)		+ 	0 PWM
+
+Pwr src detect:		Digital: 1				+ 	0 PWM
+Battery guage:	 	Digital: 1 (Analog)		+ 	0 PWM
+
+7seg Display:		Digital: 8				+ 	4 PWM
+CdS Input:	 		Digital: 1 (Analog)		+ 	0 PWM
+
+Audio Enable:		Digital: 1				+ 	0 PWM
+Audio MUX:			Digital: 2				+ 	0 PWM
+MP3 Module: 		Digital: 3				+ 	0 PWM
+
+Buttons: 			Digital: ?				+ 	0 PWM
+
+
+What's left:
+
+Digital:	3 (2 analog)
+PWM:		2
+
+Ideas: 		
+Stuck with using expander, or use multiple button/analog pin
+
+put expander on audio board for simpler wiring? ... local power filtering (ferrite?), etc

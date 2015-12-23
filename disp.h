@@ -2,7 +2,7 @@
 #define _DISP_H_
 
 #include <Time.h> // Time library
-#include <DS1307RTC.h>  // DSxxxx Library
+#include <DS3232RTC.h>  // DSxxxx Library
 
 #define BAT_DETECT 2 // battery detect on GPIO[2] (Arduino pin 8, See GPIO.h)
 

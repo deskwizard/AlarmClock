@@ -5,9 +5,9 @@
 
 #include <EEPROM.h> // Temporary for saving alarm 
 
-// Time and DS1307 Library for timekeeping
+// Time and RTC Library for timekeeping
 #include <Wire.h> // I2C library
-#include <DS1307RTC.h>  // DSxxxx Library
+#include <DS3232RTC.h>  // DSxxxx Library
 #include <Time.h> // Time library (required)
 tmElements_t time; // Time library element (required)
 
@@ -34,10 +34,10 @@ void setup() {
   debug_start();
 #endif
   TWBR = (F_CPU / 24992);
+  i2cCheck();                 // Check for i2c device presence
   configureGPIO();
-  i2cCheck();             // Check for i2c device presence
   expanderStart();
-  displayStart();         // 7 segment display initialization
+  displayStart();             // 7 segment display initialization
 
 }  // **** End setup() ****
 

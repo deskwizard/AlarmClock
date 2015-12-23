@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 #include <Time.h> // Time library
-#include <DS1307RTC.h>  // DSxxxx Library
+#include <DS3232RTC.h>  // DSxxxx Library
 
 extern tmElements_t time; // Time library element (required)
 
